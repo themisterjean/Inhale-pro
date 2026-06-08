@@ -1,0 +1,27 @@
+{
+  "nom": "Virginie",
+  "email": "virginie.morais42@gmail.com",
+  "references": [
+    {
+      "type": "video",
+      "titre": "Campagne DNF — Ne vous faites pas rouler",
+      "url": "https://www.youtube.com/watch?v=1DFYJQ3OpPU#t=24"
+    },
+    {
+      "type": "video",
+      "titre": "Interview Dr Khalatbari — tabacologue",
+      "url": "https://youtu.be/7kMGLAbVwmM"
+    },
+    {
+      "type": "doc",
+      "titre": "Brochure arrêt tabac",
+      "url": "https://docs.google.com/document/d/10deeAV80tSp86EA6_vploDaaYqze5KaOhG91AN8Kynw"
+    },
+    {
+      "type": "dossier",
+      "titre": "Dossier ressources complet",
+      "description": "Néonicotinoïdes, communication tabac, documents annexes",
+      "url": "https://drive.google.com/drive/folders/16glxlhMbwFBedr1nsh62ybyrJu0wcrXx"
+    }
+  ]
+}
