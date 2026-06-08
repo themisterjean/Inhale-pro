@@ -593,6 +593,7 @@ function showMainApp() {
     initChart();
     checkBreathReset();
     restoreDayData();
+    renderReferences();
     updateBilanBtn();
 }
 
@@ -608,6 +609,7 @@ function switchPage(id) {
     if (ab) ab.className = "flex flex-col items-center justify-center px-3 text-sky-400 transition-colors cursor-pointer";
     if (id === 'suivi') setTimeout(initChart, 60);
     if (id === 'respiration') chargerSos();
+    if (id === 'references') renderReferences();
 }
 
 // MODAL
@@ -795,18 +797,26 @@ function updateBilanBtn() {
 function renderReferences() {
     const list = document.getElementById('references-list');
     if (!list) return;
-    const refs = (window.therapeuteConfig && window.therapeuteConfig.references) || [];
-    const typeLabel = { video: 'Vidéo YouTube', doc: 'Document', dossier: 'Dossier Drive' };
-    const typeColor = { video: 'text-rose-400', doc: 'text-sky-400', dossier: 'text-teal-400' };
-    list.innerHTML = refs.map(ref => {
-        const label = typeLabel[ref.type] || ref.type;
-        const color = typeColor[ref.type] || 'text-slate-400';
-        const desc = ref.description ? `<p class="text-xs text-slate-500 mt-1">${ref.description}</p>` : '';
-        return `<a href="${ref.url}" target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl active:scale-98 transition-transform">
-            <p class="text-[10px] font-semibold uppercase tracking-wider ${color} mb-1">${label}</p>
-            <p class="text-sm font-semibold text-slate-200">${ref.titre}</p>
-            ${desc}
-        </a>`;
+
+    const refs = window.therapeuteConfig?.references;
+
+    if (!refs || refs.length === 0) {
+        list.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Aucune ressource disponible.</p>';
+        return;
+    }
+
+    list.innerHTML = refs.map(r => {
+        const typeLabel = r.type === 'video' ? 'VIDÉO YOUTUBE' :
+                          r.type === 'doc' ? 'DOCUMENT' : 'DOSSIER DRIVE';
+        const typeColor = r.type === 'video' ? 'text-rose-400' :
+                          r.type === 'doc' ? 'text-sky-400' : 'text-emerald-400';
+        return `
+      <a href="${r.url}" target="_blank" rel="noopener"
+        class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl hover:border-slate-700 transition-all active:scale-98">
+        <p class="text-xs font-semibold uppercase tracking-widest ${typeColor} mb-2">${typeLabel}</p>
+        <p class="text-base font-semibold text-slate-200">${r.titre}</p>
+        ${r.description ? `<p class="text-xs text-slate-500 mt-1">${r.description}</p>` : ''}
+      </a>`;
     }).join('');
 }
 
