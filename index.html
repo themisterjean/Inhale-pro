@@ -845,7 +845,8 @@ window.onload = async function() {
     };
     if (t) {
         try {
-            const res = await fetch('configs/' + t + '.json');
+            const baseUrl = window.location.origin + '/Inhale-pro/configs/';
+            const res = await fetch(baseUrl + t + '.json');
             if (!res.ok) throw new Error('not found');
             window.therapeuteConfig = await res.json();
         } catch(e) {
