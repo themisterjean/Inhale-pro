@@ -87,6 +87,17 @@
                 <input type="checkbox" id="chk-ob1" onchange="toggleObBtn('ob-btn1', this)">
                 <label for="chk-ob1">J'ai lu attentivement cette introduction</label>
             </div>
+            <div class="check-row">
+                <input type="checkbox" id="chk-rgpd" onchange="toggleObBtn('ob-btn1', this)">
+                <label for="chk-rgpd">
+                    J'accepte que mes données de suivi soient transmises à mon thérapeute
+                    sous forme de résumé lors de ma deuxième séance.
+                    Ces données restent sur mon appareil et ne sont jamais stockées
+                    sur un serveur tiers.
+                    <a href="#" onclick="window.open('https://privacy.iubenda.com/privacy_policy/inhale-pro','_blank')"
+                       class="text-sky-400 underline">Politique de confidentialité</a>
+                </label>
+            </div>
             <button id="ob-btn1" disabled onclick="obNextStep(2)"
                 class="w-full mt-2 py-4 rounded-2xl font-semibold text-sm tracking-wide transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer bg-slate-800 border border-slate-700 text-slate-400 enabled:bg-gradient-to-r enabled:from-sky-500 enabled:to-teal-400 enabled:text-slate-950 enabled:border-transparent enabled:shadow-[0_0_30px_rgba(56,189,248,0.3)]">
                 Continuer
@@ -562,7 +573,15 @@ function loadState() {
 }
 
 // ONBOARDING
-function toggleObBtn(btnId, cb) { document.getElementById(btnId).disabled = !cb.checked; }
+function toggleObBtn(btnId, cb) {
+    if (btnId === 'ob-btn1') {
+        const ok = document.getElementById('chk-ob1')?.checked &&
+                   document.getElementById('chk-rgpd')?.checked;
+        document.getElementById(btnId).disabled = !ok;
+    } else {
+        document.getElementById(btnId).disabled = !cb.checked;
+    }
+}
 function obNextStep(n) {
     document.querySelectorAll('[id^="ob-step-"]').forEach(el => el.classList.add('hidden'));
     document.getElementById('ob-step-' + n).classList.remove('hidden');
