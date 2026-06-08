@@ -390,23 +390,7 @@
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Ressources</p>
             <h1 class="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">Références</h1>
         </div>
-        <a href="https://www.youtube.com/watch?v=1DFYJQ3OpPU#t=24" target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl active:scale-98 transition-transform">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-400 mb-1">Vidéo YouTube</p>
-            <p class="text-sm font-semibold text-slate-200">Campagne DNF — Ne vous faites pas rouler</p>
-        </a>
-        <a href="https://youtu.be/7kMGLAbVwmM" target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl active:scale-98 transition-transform">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-400 mb-1">Vidéo YouTube</p>
-            <p class="text-sm font-semibold text-slate-200">Interview Dr Khalatbari — tabacologue</p>
-        </a>
-        <a href="https://docs.google.com/document/d/10deeAV80tSp86EA6_vploDaaYqze5KaOhG91AN8Kynw" target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl active:scale-98 transition-transform">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-sky-400 mb-1">Document</p>
-            <p class="text-sm font-semibold text-slate-200">Brochure arrêt tabac</p>
-        </a>
-        <a href="https://drive.google.com/drive/folders/16glxlhMbwFBedr1nsh62ybyrJu0wcrXx" target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl active:scale-98 transition-transform">
-            <p class="text-[10px] font-semibold uppercase tracking-wider text-teal-400 mb-1">Dossier Drive</p>
-            <p class="text-sm font-semibold text-slate-200">Dossier ressources complet</p>
-            <p class="text-xs text-slate-500 mt-1">Néonicotinoïdes, communication tabac, documents annexes</p>
-        </a>
+        <div id="references-list" class="space-y-4"></div>
     </section>
 
     <!-- LES 4 R -->
@@ -808,8 +792,28 @@ function updateBilanBtn() {
     if (todayStr === appState.dateRdv2) container.classList.remove('hidden');
     else container.classList.add('hidden');
 }
+function renderReferences() {
+    const list = document.getElementById('references-list');
+    if (!list) return;
+    const refs = (window.therapeuteConfig && window.therapeuteConfig.references) || [];
+    const typeLabel = { video: 'Vidéo YouTube', doc: 'Document', dossier: 'Dossier Drive' };
+    const typeColor = { video: 'text-rose-400', doc: 'text-sky-400', dossier: 'text-teal-400' };
+    list.innerHTML = refs.map(ref => {
+        const label = typeLabel[ref.type] || ref.type;
+        const color = typeColor[ref.type] || 'text-slate-400';
+        const desc = ref.description ? `<p class="text-xs text-slate-500 mt-1">${ref.description}</p>` : '';
+        return `<a href="${ref.url}" target="_blank" rel="noopener noreferrer" class="block bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/60 rounded-2xl p-5 backdrop-blur-xl active:scale-98 transition-transform">
+            <p class="text-[10px] font-semibold uppercase tracking-wider ${color} mb-1">${label}</p>
+            <p class="text-sm font-semibold text-slate-200">${ref.titre}</p>
+            ${desc}
+        </a>`;
+    }).join('');
+}
+
 function envoyerBilan() {
     const bilan = {
+        therapeute_email: window.therapeuteConfig?.email || '',
+        therapeute_nom: window.therapeuteConfig?.nom || 'Thérapeute',
         patient: { dateRdv1: appState.dateRdv, dateRdv2: appState.dateRdv2, cigPerDay: appState.cigPerDay, paquetPrice: appState.paquetPrice },
         defis: {
             jour1: appState.dayData&&appState.dayData[1]?{baton:appState.dayData[1]['j1-baton'],carotte:appState.dayData[1]['j1-carotte']}:{},
@@ -826,7 +830,34 @@ function envoyerBilan() {
     toggleModal('modal-bilan', true);
 }
 
-window.onload=function(){loadState();if(appState.onboardingComplete)showMainApp();};
+window.onload = async function() {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('t');
+    const DEFAULT_CONFIG = {
+        nom: "",
+        email: "",
+        references: [
+            { type: "video", titre: "Campagne DNF — Ne vous faites pas rouler", url: "https://www.youtube.com/watch?v=1DFYJQ3OpPU#t=24" },
+            { type: "video", titre: "Interview Dr Khalatbari — tabacologue", url: "https://youtu.be/7kMGLAbVwmM" },
+            { type: "doc", titre: "Brochure arrêt tabac", url: "https://docs.google.com/document/d/10deeAV80tSp86EA6_vploDaaYqze5KaOhG91AN8Kynw" },
+            { type: "dossier", titre: "Dossier ressources complet", description: "Néonicotinoïdes, communication tabac, documents annexes", url: "https://drive.google.com/drive/folders/16glxlhMbwFBedr1nsh62ybyrJu0wcrXx" }
+        ]
+    };
+    if (t) {
+        try {
+            const res = await fetch('configs/' + t + '.json');
+            if (!res.ok) throw new Error('not found');
+            window.therapeuteConfig = await res.json();
+        } catch(e) {
+            window.therapeuteConfig = DEFAULT_CONFIG;
+        }
+    } else {
+        window.therapeuteConfig = DEFAULT_CONFIG;
+    }
+    renderReferences();
+    loadState();
+    if (appState.onboardingComplete) showMainApp();
+};
 </script>
 </body>
 </html>
