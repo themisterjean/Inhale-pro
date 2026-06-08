@@ -845,14 +845,17 @@ async function loadTherapeuteConfig() {
     const t = params.get('t');
     if (!t) return;
     try {
-        const baseUrl = window.location.origin +
-            window.location.pathname.replace('index.html', '') + 'configs/';
-        const res = await fetch(baseUrl + t + '.json');
-        if (!res.ok) return;
+        const url = 'https://themisterjean.github.io/Inhale-pro/configs/' + t + '.json';
+        console.log('Chargement config:', url);
+        const res = await fetch(url);
+        if (!res.ok) {
+            console.error('Config introuvable:', res.status);
+            return;
+        }
         window.therapeuteConfig = await res.json();
-        console.log('Config chargée:', window.therapeuteConfig);
+        console.log('Config chargée OK:', window.therapeuteConfig);
     } catch(e) {
-        console.error('Erreur config:', e);
+        console.error('Erreur fetch config:', e);
     }
 }
 
