@@ -593,7 +593,7 @@ function showMainApp() {
     initChart();
     checkBreathReset();
     restoreDayData();
-    renderReferences();
+    setTimeout(() => renderReferences(), 300);
     updateBilanBtn();
 }
 
@@ -609,7 +609,7 @@ function switchPage(id) {
     if (ab) ab.className = "flex flex-col items-center justify-center px-3 text-sky-400 transition-colors cursor-pointer";
     if (id === 'suivi') setTimeout(initChart, 60);
     if (id === 'respiration') chargerSos();
-    if (id === 'references') renderReferences();
+    if (id === 'references') setTimeout(() => renderReferences(), 100);
 }
 
 // MODAL
