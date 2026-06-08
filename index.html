@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="h-full bg-slate-950 text-slate-100">
+<html lang="fr-FR" class="h-full bg-slate-950 text-slate-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -24,7 +24,7 @@
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
         /* Date picker — icône claire sur fond sombre */
         input[type="date"] { color-scheme: dark; color: #e2e8f0; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) brightness(2); cursor: pointer; opacity: 0.8; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) brightness(2); cursor: pointer; opacity: 1; }
         /* Breathing */
         .breathing-circle { transition: transform 5s linear, background-color 2s ease; }
         .inhale { transform: scale(2.2); background-color: rgba(56,189,248,0.25); box-shadow: 0 0 50px rgba(56,189,248,0.4); }
@@ -574,8 +574,10 @@ function obNextStep(n) {
 function finishOnboarding() {
     const d = document.getElementById('init-date-rdv').value;
     if (!d) { alert("Merci de saisir la date de votre première séance."); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) { alert("Format de date invalide pour la première séance."); return; }
     appState.dateRdv = d;
     const d2 = document.getElementById('init-date-rdv2').value;
+    if (d2 && !/^\d{4}-\d{2}-\d{2}$/.test(d2)) { alert("Format de date invalide pour la deuxième séance."); return; }
     if (d2) appState.dateRdv2 = d2;
     appState.cigPerDay = parseInt(document.getElementById('init-cig-day').value) || 20;
     appState.paquetPrice = parseFloat(document.getElementById('init-cig-price').value) || 12.50;
