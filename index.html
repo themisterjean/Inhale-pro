@@ -538,17 +538,13 @@ const PAGES = ['suivi','programme','respiration','4r','references'];
 
 let appState = {
     onboardingComplete: false,
-    dateRdv: "2026-06-02",
+    dateRdv: "",
     dateRdv2: "",
     cigPerDay: 20,
     paquetPrice: 12.50,
     validedDays: {},
     dayData: {},
-    craquages: [
-        { date:"2026-06-03", heure:"14:00", motif:"Habitude", feeling:"Je peux m'en passer", qte:1 },
-        { date:"2026-06-03", heure:"20:00", motif:"Stress",   feeling:"Difficile de m'en passer", qte:1 },
-        { date:"2026-06-04", heure:"09:30", motif:"Habitude", feeling:"Je peux m'en passer", qte:1 }
-    ],
+    craquages: [],
     breathingCount: 0,
     lastBreathingDate: "",
     breathingLogs: []
