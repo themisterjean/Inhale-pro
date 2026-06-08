@@ -609,7 +609,7 @@ function switchPage(id) {
     if (ab) ab.className = "flex flex-col items-center justify-center px-3 text-sky-400 transition-colors cursor-pointer";
     if (id === 'suivi') setTimeout(initChart, 60);
     if (id === 'respiration') chargerSos();
-    if (id === 'references') setTimeout(() => renderReferences(), 100);
+    if (id === 'references') { renderReferences(); }
 }
 
 // MODAL
@@ -795,6 +795,7 @@ function updateBilanBtn() {
     else container.classList.add('hidden');
 }
 function renderReferences() {
+    console.log('renderReferences appelée, config:', window.therapeuteConfig);
     const list = document.getElementById('references-list');
     if (!list) return;
 
