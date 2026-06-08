@@ -837,8 +837,22 @@ function envoyerBilan() {
         craquages: appState.craquages||[],
         respiration: { totalSessions: appState.breathingCount, logs: appState.breathingLogs||[] }
     };
-    console.log(JSON.stringify(bilan));
-    toggleModal('modal-bilan', true);
+    fetch('https://n8n.themetabi.com/webhook/inhale-bilan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bilan)
+    })
+    .then(res => {
+        if (res.ok) {
+            toggleModal('modal-bilan', true);
+        } else {
+            alert('Erreur lors de l envoi. Code: ' + res.status);
+        }
+    })
+    .catch(err => {
+        alert('Erreur réseau. Vérifiez votre connexion.');
+        console.error(err);
+    });
 }
 
 async function loadTherapeuteConfig() {
